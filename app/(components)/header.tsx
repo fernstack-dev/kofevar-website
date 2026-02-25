@@ -15,7 +15,7 @@ const navItems = [
 export default function Header() {
     const pathname = usePathname()
     return (
-        <header className="sticky top-0 bg-white text-black">
+        <header className="sticky top-0 bg-white text-black z-40">
             <div className="container mx-auto px-6">
                 <div className="flex h-16 items-center justify-between">
                     <Link
@@ -23,7 +23,7 @@ export default function Header() {
                         className="flex items-center gap-3 text-amber-950 transition-all hover:text-amber-900"
                     >
                         <Coffee className="h-12 w-12"/>
-                        <span className="text-xl font-bold">Кофевар</span>
+                        <span className="text-xl font-bold hidden md:block">Кофевар</span>
                     </Link>
                     <nav className="flex items-center">
                         {navItems.map((item) => {
