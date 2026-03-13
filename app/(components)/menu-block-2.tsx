@@ -27,7 +27,7 @@ const menuData: MenuCategory[] = [
     id: "coffee",
     name: "Кофе",
     items: [
-      { categoryId: "coffee", id: "espresso", name: "Эспрессо", price: '150', description: ""},
+      { categoryId: "coffee", id: "espresso", name: "Эспрессо", price: '150', description: "", image: "/menu/espresso.png"},
       { categoryId: "coffee", id: "capuccino", name: "Капучино", price: '150', description: ""},
       { categoryId: "coffee", id: "latte", name: "Латте", price: '150', description: ""},
     ]
@@ -94,7 +94,7 @@ export default function MenuBlock2() {
       
       <div className="px-16 pb-6 flex flex-col md:flex-row gap-8">
         <aside className="md:w-64 flex-shrink-0">
-          <div className="bg-muted p-4 rounded-none sticky top-20">
+          <div className="bg-white p-4 rounded-none sticky top-20">
             <h2 className="font-bold text-amber-950 text-2xl mb-4 border-b-5 pb-2 border-amber-950">Категории</h2>
             <ScrollArea className="h-[300px] pr-4">
               {menuData.map((category) => (
@@ -120,7 +120,31 @@ export default function MenuBlock2() {
               const category = menuData.find(c => c.id === categoryId);
               return (
                 <section key={categoryId} className="mb-10">
-                  <h2 className="inline-block text-2xl font-bold text-amber-950 border-b-5 pb-2 border-amber-950">{category?.name}</h2>
+                  <h2 className="inline-block text-2xl font-bold text-amber-950 border-b-5 pb-2 border-amber-950 mb-2">{category?.name}</h2>
+                  <div className="grid md:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                    {items.map((item) => (
+                      <Card key={item.id} className="md:w-full md:max-w-3/2 lg:w-full md:min-w-60 lg:max-h-75 rounded-none overflow-hidden border-amber-950 border-dashed border-4">
+                        {item.image && (
+                          <div className="h-100% overflow-hidden">
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        )}
+                        <CardHeader>
+                          <CardTitle className="flex justify-between items-center">
+                            <span className="text-amber-950 font-bold md:text-3xl sm:text-lg">{item.name}</span>
+                            <span className="text-amber-700 md:text-3xl font-bold sm:text-lg">{item.price}</span>
+                          </CardTitle>
+                        </CardHeader>
+                        {/* <CardContent>
+                          <p className="text-sm text-muted-foreground">{item.description}</p>
+                        </CardContent> */}
+                      </Card>
+                    ))}
+                  </div>
                 </section>
               );
             })
