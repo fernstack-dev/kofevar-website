@@ -1,47 +1,13 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Coffee } from 'lucide-react'
-
-interface MenuItem {
-  id: string;
-  name: string;
-  description?: string;
-  price: string;
-  image?: string;
-  categoryId: string;
-}
-
-interface MenuCategory {
-  id: string;
-  name: string;
-  items: MenuItem[];
-}
-
-const menuData: MenuCategory[] = [
-  {
-    id: "coffee",
-    name: "Кофе",
-    items: [
-      { categoryId: "coffee", id: "espresso", name: "Эспрессо", price: '150', description: "", image: "/menu/espresso.png"},
-      { categoryId: "coffee", id: "capuccino", name: "Капучино", price: '150', description: ""},
-      { categoryId: "coffee", id: "latte", name: "Латте", price: '150', description: ""},
-    ]
-  },
-  {
-    id: "desserts",
-    name: "Десерты",
-    items: [
-      { categoryId: "desserts", id: "cheescake", name: "Чизкейк", price: '150', description: ""},
-      { categoryId: "desserts", id: "bun", name: "Пироженное", price: '150', description: ""},
-      { categoryId: "desserts", id: "croissant", name: "Круассан", price: '150', description: ""},
-    ]
-  }
-]
+import { menuData } from '@/lib/menuData'
 
 export default function MenuBlock2() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -70,14 +36,13 @@ export default function MenuBlock2() {
   }, [searchQuery, selectedCategories, allItems])
 
   const groupedItems = useMemo(() => {
-    const groups: Record<string, typeof filteredItems> = {};
-    filteredItems.forEach(item => {
-      if (!groups[item.categoryId]) {
-        groups[item.categoryId] = []
-        groups[item.categoryId].push(item);
+    return filteredItems.reduce((acc,item) => {
+      if(!acc[item.categoryId]){
+        acc[item.categoryId] = [];
       }
-    });
-    return groups;
+      acc[item.categoryId].push(item);
+      return acc;
+    }, {} as Record<string, typeof filteredItems>)
   }, [filteredItems])
 
   return (
@@ -123,9 +88,14 @@ export default function MenuBlock2() {
                   <h2 className="inline-block text-2xl font-bold text-amber-950 border-b-5 pb-2 border-amber-950 mb-2">{category?.name}</h2>
                   <div className="grid md:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                     {items.map((item) => (
-                      <Card key={item.id} className="md:w-full md:max-w-3/2 lg:w-full md:min-w-60 lg:max-h-75 rounded-none overflow-hidden border-amber-950 border-dashed border-4">
+                      <Link
+                        key={item.id}
+                        href={`/menu/${item.id}`}
+                        className="block"
+                      >
+                      <Card className="group cursor-pointer md:w-full md:max-w-3/2 lg:w-full md:min-w-60 lg:max-h-75 rounded-none overflow-hidden border-amber-950 hover:bg-amber-100 active:scale-105 hover:scale-102 after:active:transition-duration-500 transition-duration-100 transition-all border-dashed border-4">
                         {item.image && (
-                          <div className="h-100% overflow-hidden">
+                          <div className="group-hover:pt-0 group-hover:-mt-3 px-10 pt-10 -mt-10 overflow-hidden group-hover:-m-2 transition-all">
                             <img
                               src={item.image}
                               alt={item.name}
@@ -135,14 +105,15 @@ export default function MenuBlock2() {
                         )}
                         <CardHeader>
                           <CardTitle className="flex justify-between items-center">
-                            <span className="text-amber-950 font-bold md:text-3xl sm:text-lg">{item.name}</span>
-                            <span className="text-amber-700 md:text-3xl font-bold sm:text-lg">{item.price}</span>
+                            <span className="text-amber-950 group-hover:text-amber-800 font-bold md:text-3xl sm:text-lg  group-hover:border-b-5 group-hover:pb-1 transition-all border-amber-800">{item.name}</span>
+                            <span className="text-amber-700 md:text-2xl pt-1 font-bold sm:text-lg">{item.price}₽</span>
                           </CardTitle>
                         </CardHeader>
                         {/* <CardContent>
                           <p className="text-sm text-muted-foreground">{item.description}</p>
                         </CardContent> */}
                       </Card>
+                      </Link>
                     ))}
                   </div>
                 </section>
